@@ -1,0 +1,16 @@
+body {
+    background-color: aquamarine;
+    font-family: sans-serif;
+    color: rgb(83, 0, 78);
+}
+
+.image-container {
+    width: 500px;
+    margin: auto;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
