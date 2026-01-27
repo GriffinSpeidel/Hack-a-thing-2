@@ -7,6 +7,11 @@ body {
 .image-container {
     width: 500px;
     margin: auto;
+    position: relative;
+}
+
+.image-container img, .image-container .draggable-part {
+    position: absolute;
 }
 
 .image-container img {

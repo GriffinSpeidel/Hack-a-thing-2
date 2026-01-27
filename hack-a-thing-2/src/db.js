@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, setDoc, onSnapshot } from "firebase/firestore/lite";
+import { getFirestore, collection, doc, setDoc, onSnapshot } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {

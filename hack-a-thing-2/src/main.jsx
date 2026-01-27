@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { DndProvider, useDrag, useDrop, useDragLayer } from 'react-dnd';
 import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend';
+import { subscribeParts, updatePart } from "./db";
 import './dressup.css';
 import vitruvian from './assets/vitruvian.png';
 import shirt from './assets/shirt.png';
@@ -20,13 +21,6 @@ const initialParts = {
     0: { x: 100, y: 200 },
     1: { x: 200, y: 50 },
     2: { x: 300, y: 300 }
-}
-
-async function getParts(db) {
-    const partsCol = collection(db, 'parts');
-    const partsSnapshot = await getDocs(partsCol);
-    const partsList = partsSnapshot.docs.map(doc => doc.data());
-    return partsList.map(item => item);
 }
 
 function DraggablePart({ id, x, y }) {
@@ -120,24 +114,40 @@ const layerStyles = {
 function Board() {
 	const [parts, setParts] = useState(initialParts);
 
+    useEffect(() => {
+        // subscribeParts returns an unsubscribe function
+        const unsubscribe = subscribeParts(setParts);
+
+        // cleanup on unmount
+        return () => unsubscribe();
+    }, []);
+
     // calls setParts to update internal state
 	const movePart = (id, x, y) => {
+        // update local state
 		setParts(prev => ({
 			...prev,
 			[id]: { x, y }
 		}));
+
+        // update in Firestore
+        updatePart(id, { x, y });
 	};
+
+    const imageRef = useRef(null);
 
 	const [, drop] = useDrop(() => ({
 		accept: "part",
 		drop: (item, monitor) => {
-			const offset = monitor.getClientOffset();
-			if (!offset) return;
+			const clientOffset = monitor.getClientOffset();
+			if (!clientOffset || !imageRef) return;
+
+            const rect = imageRef.current.getBoundingClientRect();
 
 			movePart(
                 item.id,
-                offset.x - item.grabOffset.x,
-			    offset.y - item.grabOffset.y
+                clientOffset.x - rect.left - item.grabOffset.x,
+			    clientOffset.y - rect.top - item.grabOffset.y
             );
 		}
 	}));
@@ -146,13 +156,15 @@ function Board() {
 		<div ref={drop} className="board">
 			<h1>Welcome to the Dress-Up Game!</h1>
 
-			<div className="image-container">
+			<div className="image-container" ref={imageRef}>
 				<img src={vitruvian} alt="Vitruvian Man" />
+
+                {Object.entries(parts).map(([id, pos]) => (
+                    <DraggablePart key={id} id={id} x={pos.x} y={pos.y} />
+                ))}
 			</div>
 
-			{Object.entries(parts).map(([id, pos]) => (
-				<DraggablePart key={id} id={id} x={pos.x} y={pos.y} />
-			))}
+			
 
             <CustomDragLayer />
 		</div>
