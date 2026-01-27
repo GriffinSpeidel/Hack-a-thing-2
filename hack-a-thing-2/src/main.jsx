@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 import { DndProvider, useDrag, useDrop, useDragLayer } from 'react-dnd';
 import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend';
 import './dressup.css';
@@ -9,20 +7,6 @@ import vitruvian from './assets/vitruvian.png';
 import shirt from './assets/shirt.png';
 import sombrero from './assets/sombrero.png';
 import tutu from './assets/tutu.png';
-
-// from firebase console
-const firebaseConfig = {
-    apiKey: "AIzaSyB7jxx88wCYh745IDoAnf_QOUPZ6lPvuPU",
-    authDomain: "dress-up-f17f8.firebaseapp.com",
-    projectId: "dress-up-f17f8",
-    storageBucket: "dress-up-f17f8.firebasestorage.app",
-    messagingSenderId: "844245990665",
-    appId: "1:844245990665:web:6cd4485ddbc8d67e7667d8"
-};
-
-// initialize references to app and db based on the config above
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // For this demo, images are given numeric IDs. Ideally, in production, these would be stored in the database.
 // I didn't want to pay for Firebase storage but that is an option.
