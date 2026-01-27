@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
+
 // from firebase console
 const firebaseConfig = {
   apiKey: "AIzaSyB7jxx88wCYh745IDoAnf_QOUPZ6lPvuPU",
