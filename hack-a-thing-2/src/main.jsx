@@ -47,6 +47,7 @@ function DraggablePart({ id, x, y }) {
 		})
 	}));
 
+	// lets me define how the image looks when dragged (according to the scale I give it)
     useEffect(() => {
 		preview(getEmptyImage(), { captureDraggingState: true });
 	}, [preview]);
@@ -60,7 +61,7 @@ function DraggablePart({ id, x, y }) {
 				position: "absolute",
 				left: x,
 				top: y,
-				width: "200px",
+				width: "200px", // same size for all is fine for the demo
                 height: "auto",
 				cursor: "move",
 				opacity: isDragging ? 0.5 : 1
@@ -69,6 +70,7 @@ function DraggablePart({ id, x, y }) {
 	);
 }
 
+// this component
 function CustomDragLayer() {
 	const {
 		isDragging,
@@ -110,10 +112,11 @@ const layerStyles = {
 	height: '100%'
 };
 
-// definind the board as a separate component allows it to be called within the context of DndProvider
+// defining the board as a separate component allows it to be called within the context of DndProvider
 function Board() {
 	const [parts, setParts] = useState(initialParts);
 
+	// from ChatGPT: "how do I updater the positions of parts based on realtime updates in a firestore database?"
     useEffect(() => {
         // subscribeParts returns an unsubscribe function
         const unsubscribe = subscribeParts(setParts);
@@ -136,6 +139,7 @@ function Board() {
 
     const imageRef = useRef(null);
 
+	// the useDrop hook enables the board to accept dropped items
 	const [, drop] = useDrop(() => ({
 		accept: "part",
 		drop: (item, monitor) => {
@@ -163,8 +167,6 @@ function Board() {
                     <DraggablePart key={id} id={id} x={pos.x} y={pos.y} />
                 ))}
 			</div>
-
-			
 
             <CustomDragLayer />
 		</div>
